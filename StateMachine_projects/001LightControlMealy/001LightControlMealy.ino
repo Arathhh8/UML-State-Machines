@@ -13,6 +13,10 @@ typedef enum{
 
 light_state_t curr_state = LIGHT_OFF;
 
+void light_state_machine(uint8_t event);
+void light_change_intensity(uint8_t pin, uint8_t intensity);
+void run_entry_action(light_state_t state);
+
 #define PIN_LED 9
 
 #define LIGHT_BRIGHT_OFF    0
@@ -20,15 +24,32 @@ light_state_t curr_state = LIGHT_OFF;
 #define LIGHT_BRIGHT_MED    85
 #define LIGHT_BRIGHT_FULL   255
 
+void light_init(){
+  curr_state = LIGHT_OFF;
+  run_entry_action(LIGHT_OFF);
+}
 
 void setup() {
   // put your setup code here, to run once:
+  Serial.begin(115200);
+  Serial.println("Light control application");
+  Serial.println("-------------------------");
+  Serial.println("Send 'x' or 'o'");
 
+  light_init();
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  uint8_t event;
+  if(Serial.available() > 0){
+    event = Serial.read();
+    if(event == 'o'){
+      light_state_machine(ON);
+    }else if(event == 'x'){
+      light_state_machine(OFF);
+    }
+  }
 }
 
 
@@ -38,7 +59,7 @@ void light_state_machine(uint8_t event){
       switch(event){
         case ON:{
           light_change_intensity(PIN_LED, LIGHT_BRIGHT_DIM);
-          current_state = LIGTH_DIM;
+          curr_state = LIGHT_DIM;
           break;
         }
       }
@@ -47,9 +68,13 @@ void light_state_machine(uint8_t event){
     case LIGHT_DIM:{
       switch(event){
         case ON:{
+          light_change_intensity(PIN_LED, LIGHT_BRIGHT_MED);
+          curr_state = LIGHT_MEDIUM;
           break;
         }
         case OFF:{
+          light_change_intensity(PIN_LED, LIGHT_BRIGHT_OFF);
+          curr_state = LIGHT_OFF;
           break;
         }
       }
@@ -58,9 +83,13 @@ void light_state_machine(uint8_t event){
     case LIGHT_MEDIUM:{
       switch(event){
         case ON:{
+          light_change_intensity(PIN_LED, LIGHT_BRIGHT_FULL);
+          curr_state = LIGHT_FULL;
           break;
         }
         case OFF:{
+          light_change_intensity(PIN_LED, LIGHT_BRIGHT_OFF);
+          curr_state = LIGHT_OFF;
           break;
         }
       }
@@ -69,9 +98,13 @@ void light_state_machine(uint8_t event){
     case LIGHT_FULL:{
       switch(event){
         case ON:{
+          light_change_intensity(PIN_LED, LIGHT_BRIGHT_DIM);
+          curr_state = LIGHT_DIM;
           break;
         }
         case OFF:{
+          light_change_intensity(PIN_LED, LIGHT_BRIGHT_OFF);
+          curr_state = LIGHT_OFF;
           break;
         }
       }
