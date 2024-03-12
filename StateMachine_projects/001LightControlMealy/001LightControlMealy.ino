@@ -36,7 +36,7 @@ void setup() {
   Serial.println("-------------------------");
   Serial.println("Send 'x' or 'o'");
 
-  light_init();
+  //light_init();
 }
 
 void loop() {
