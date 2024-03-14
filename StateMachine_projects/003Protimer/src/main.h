@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-/* Signals of the application */
+/************************ Signals of the application ************************/
 typedef enum {
     INC_TIME,
     DEC_TIME,
@@ -37,20 +37,7 @@ typedef struct {
 }protimer_t;
 
 
-
-////////////////////////////////////////////////////////
-
-/* For user generated events */
-typedef struct{
-    uint8_t sig;
-}protimer_user_event_t;
-
-
-/* For tick event */
-typedef struct{
-    uint8_t sig;
-    uint8_t ss;
-}protimer_tick_event_t;
+/************************ Events of the application ************************/
 
 /* Generic(Super) event structure */
 typedef struct{
@@ -65,8 +52,19 @@ typedef struct{
 /* For tick event */
 typedef struct{
     event_t super;
-    event_t ss;
+    uint8_t ss;
 }protimer_tick_event_t;
 
+
+typedef enum{
+    EVENT_HANDLED,
+    EVENT_IGNORED,
+    EVENT_TRANSITION
+}event_status_t;
+
+/* FUNCTION PROTOTYPES */
+
+void protimer_init(protimer_t *mobj);
+event_status_t protimer_state_machine(protimer_t *const mobj, event_t const *const e)
 
 #endif
