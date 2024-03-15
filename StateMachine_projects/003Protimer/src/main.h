@@ -3,6 +3,24 @@
 
 #include <Arduino.h>
 
+#define PIN_BUTTON1 2
+#define PIN_BUTTON1 3
+#define PIN_BUTTON1 4
+#define PIN_BUZZER  12
+
+
+
+// lcd conections 
+
+#define PIN_LCD_RS  5
+#define PIN_LCD_RW  6
+#define PIN_LCD_RN  7
+#define PIN_LCD_D4  8
+#define PIN_LCD_D5  9
+#define PIN_LCD_D6  10
+#define PIN_LCD_D7  11
+
+
 /************************ Signals of the application ************************/
 typedef enum {
     INC_TIME,

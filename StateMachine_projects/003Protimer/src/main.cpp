@@ -14,10 +14,15 @@ void setup() {
 }
 
 void loop() {
+
+  uint8_t b1, b2, b3;
+
+  b1 = digitalRead()
+
   // 1. read the button pad status
   // 2. make an event
   // 3. send it to event dispatcher
-  //protimer_event_dispatcher();
+  protimer_event_dispatcher();
 
 }
 
