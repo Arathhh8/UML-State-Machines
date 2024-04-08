@@ -3,6 +3,29 @@
 
 #include <Arduino.h>
 
+#define PIN_BUTTON1 2
+#define PIN_BUTTON2 3
+#define PIN_BUTTON3 4  
+#define PIN_BUZZER  12
+
+// LCD Connections
+
+#define PIN_LCD_RS  5
+#define PIN_LCD_RW  6
+#define PIN_LCD_EN  7
+#define PIN_LCD_R4  8
+#define PIN_LCD_R5  9
+#define PIN_LCD_R6  10
+#define PIN_LCD_R7  11
+
+// Button truth table
+
+#define BTN_PAD_VALUE_SP        1
+#define BTN_PAD_VALUE_DEC_TIME  2
+#define BTN_PAD_VALUE_INC_TIME  4
+#define BTN_PAD_VALUE_ABRT      6
+
+
 /************************ Signals of the application ************************/
 typedef enum {
     INC_TIME,
@@ -65,6 +88,6 @@ typedef enum{
 /* FUNCTION PROTOTYPES */
 
 void protimer_init(protimer_t *mobj);
-event_status_t protimer_state_machine(protimer_t *const mobj, event_t const *const e)
+event_status_t protimer_state_machine(protimer_t *const mobj, event_t const *const e);
 
 #endif
