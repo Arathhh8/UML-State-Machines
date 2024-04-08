@@ -26,6 +26,7 @@
 #define BTN_PAD_VALUE_ABRT      6
 
 
+
 /************************ Signals of the application ************************/
 typedef enum {
     INC_TIME,

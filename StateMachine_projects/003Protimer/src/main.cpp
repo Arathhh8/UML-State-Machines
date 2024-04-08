@@ -16,7 +16,6 @@ void setup() {
 
 void loop() {
 
-
   uint8_t b1, b2, b3, btn_pad_value;
   protimer_user_event_t ue; // ue user event
   static uint32_t current_time = millis();
