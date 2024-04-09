@@ -25,6 +25,12 @@
 #define BTN_PAD_VALUE_INC_TIME  4
 #define BTN_PAD_VALUE_ABRT      6
 
+typedef enum{
+    NO_PRESSED,
+    BOUNCE,
+    PRESSED
+}btn_state_t;
+
 
 
 /************************ Signals of the application ************************/

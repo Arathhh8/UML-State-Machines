@@ -11,6 +11,13 @@ static protimer_t protimer;
 
 void setup() {
   // put your setup code here, to run once:
+  Serial.begin(115200);
+  //display_init();
+  Serial.println("Productive timer application");
+  Serial.println("============================");
+  pinMode(PIN_BUTTON1, INPUT);
+  pinMode(PIN_BUTTON2, INPUT);
+  pinMode(PIN_BUTTON3, INPUT);
   protimer_init(&protimer);
 }
 
@@ -86,6 +93,38 @@ void protimer_event_dispatcher(protimer_t *const mobj, event_t const *const e){
 }
 
 static uint8_t process_button_pad_value(uint8_t btn_pad_value){
+
+  static btn_state_t btn_sm_state = NO_PRESSED;
+  static uint32_t current_time = millis();
+
+  switch (btn_sm_state){
+    case NO_PRESSED:{
+      if(btn_pad_value){
+        btn_sm_state = BOUNCE;
+        current_time = millis();
+      }
+      break;
+    }
+    case BOUNCE:{
+      if(millis() - current_time >= 50 ){
+        // 50 ms has passed
+        if(btn_pad_value){
+          btn_sm_state = PRESSED;
+          return btn_pad_value;
+        }else{
+          btn_sm_state = NO_PRESSED;
+        }
+      }
+      break;
+    }
+    case PRESSED:{
+        if(!btn_pad_value){
+          btn_sm_state = BOUNCE;
+          current_time = millis();
+        }
+        break;
+    }
+  }
 
   return 0;
 }

@@ -41,7 +41,8 @@ event_status_t protimer_state_machine(protimer_t *const mobj, event_t const * co
         case STAT:{
             return protimer_state_handler_STAT(mobj,e);
         }
-    }
+    } // End of switch
+    return EVENT_IGNORED;
 }
 
 static event_status_t protimer_state_handler_IDLE(protimer_t *const mobj, event_t const *const e){
