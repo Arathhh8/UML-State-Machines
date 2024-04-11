@@ -1,8 +1,10 @@
-#include "main.h"
+#include"main.h"
+#include"lcd.h"
 
 
 static void protimer_event_dispatcher(protimer_t *const mobj, event_t const *const e);
 static uint8_t process_button_pad_value(uint8_t btn_pad_value);
+static void display_init();
 
 
 static protimer_t protimer;
@@ -12,7 +14,7 @@ static protimer_t protimer;
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  //display_init();
+  display_init();
   Serial.println("Productive timer application");
   Serial.println("============================");
   pinMode(PIN_BUTTON1, INPUT);
@@ -127,4 +129,14 @@ static uint8_t process_button_pad_value(uint8_t btn_pad_value){
   }
 
   return 0;
+}
+
+static void display_init(){
+
+  lcd_begin(16, 2);
+  lcd_clear();
+  lcd_move_cursor_L_to_R();
+  lcd_set_cursor(0, 0);
+  lcd_no_auto_scroll();
+  lcd_cursor_off();
 }

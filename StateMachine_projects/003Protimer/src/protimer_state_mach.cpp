@@ -1,8 +1,9 @@
 #include "main.h"
+#include"lcd.h"
 
 /* PROTOTYPES OF HELPER FUNCTIONS */
 static void display_time(uint32_t time);
-static void display_message(String s);
+static void display_message(String s, uint8_t col, uint8_t row);
 static void display_clear(void);
 static void do_beep(void);
 
@@ -18,8 +19,11 @@ static event_status_t protimer_state_handler_STAT(protimer_t *const mobj, event_
 
 
 void protimer_init(protimer_t *mobj){
+    event_t ee; // entry action
+    ee.sig = ENTRY;
     mobj->active_state = IDLE;
     mobj->pro_time = 0;
+    protimer_state_machine(mobj, &ee);
 
 }
 
@@ -51,7 +55,8 @@ static event_status_t protimer_state_handler_IDLE(protimer_t *const mobj, event_
             mobj->curr_time = 0;
             mobj->elapsed_time = 0;
             display_time(0);
-            display_message("Set time");
+            display_message("Set ", 0, 0);
+            display_message("time ", 1, 0);
             return EVENT_HANDLED;
         }
 
@@ -166,7 +171,7 @@ static event_status_t protimer_state_handler_PAUSE(protimer_t *const mobj, event
 
     switch (e->sig){
         case ENTRY:{
-            display_message("Paused");
+            display_message("Paused", 5, 1);
             return EVENT_HANDLED;
         }
 
@@ -195,11 +200,12 @@ static event_status_t protimer_state_handler_PAUSE(protimer_t *const mobj, event
 }
 
 static event_status_t protimer_state_handler_STAT(protimer_t *const mobj, event_t const *const e){
+    static uint8_t tick_count;
 
     switch (e->sig){
         case ENTRY:{
             display_time(mobj->pro_time);
-            display_message("Productive time");
+            display_message("Productive time", 1, 1);
             return EVENT_HANDLED;
         }
 
@@ -209,7 +215,8 @@ static event_status_t protimer_state_handler_STAT(protimer_t *const mobj, event_
         }
 
         case TIME_TICK:{
-            if(((protimer_tick_event_t *)(e))->ss == 10){
+            if(++tick_count == 30){
+                tick_count = 0;
                 mobj->active_state = IDLE;
                 return EVENT_TRANSITION;
             }
@@ -225,16 +232,26 @@ static event_status_t protimer_state_handler_STAT(protimer_t *const mobj, event_
  **********************************************************************************************************************************************/
 
 static void display_time(uint32_t time){
+    char buf[7];
+    String time_msg;
 
+    uint16_t m = time / 60;
+    uint8_t s = time % 60;
+    sprintf(buf, "%03d:%02d", m,s);
+
+    time_msg = (String)buf;
+    lcd_set_cursor(0, 5);
+    lcd_print_string(time_msg);
 }
-static void display_message(String s){
-
+static void display_message(String s, uint8_t col, uint8_t row){
+    lcd_set_cursor(col, row);
+    lcd_print_string(s);
 }
 
 static void display_clear(void){
-
+    lcd_clear();
 }
 
 static void do_beep(void){
-
+    tone(PIN_BUZZER, 6000, 25);
 }
