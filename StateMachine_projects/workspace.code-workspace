@@ -2,6 +2,14 @@
 	"folders": [
 		{
 			"path": "003Protimer"
+		},
+		{
+			"name": "004Protimer_StateHandler",
+			"path": "004Protimer_StateHandler"
+		},
+		{
+			"name": "005Protimer_StateTable",
+			"path": "005Protimer_StateTable"
 		}
 	],
 	"settings": {}
