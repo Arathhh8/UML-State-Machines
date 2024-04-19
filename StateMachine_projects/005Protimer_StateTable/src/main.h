@@ -102,6 +102,7 @@ event_status_t protimer_state_machine(protimer_t *const mobj, event_t const *con
  ******************************************************** EVENT HANDLERS PROTOTYPES ***********************************************************
  **********************************************************************************************************************************************/
 
+
 /****************************  IDLE EVENT HANDLER  ****************************/
 event_status_t IDLE_Entry(protimer_t *const mobj, event_t const *const e);
 event_status_t IDLE_Exit(protimer_t *const mobj, event_t const *const e);
