@@ -135,6 +135,8 @@ event_status_t PUASE_ENTRY(protimer_t *const mobj, event_t const *const e);
 event_status_t PUASE_Exit(protimer_t *const mobj, event_t const *const e);
 event_status_t PUASE_Inc_time(protimer_t *const mobj, event_t const *const e);
 event_status_t PUASE_Dec_time(protimer_t *const mobj, event_t const *const e);
+event_status_t PUASE_Start_pause(protimer_t *const mobj, event_t const *const e);
+event_status_t PUASE_Abrt(protimer_t *const mobj, event_t const *const e);
 
 /****************************  STAT EVENT HANDLER  ****************************/
 event_status_t STAT_Entry(protimer_t *const mobj, event_t const *const e);

@@ -5,6 +5,7 @@
 static void protimer_event_dispatcher(protimer_t *const mobj, event_t const *const e);
 static uint8_t process_button_pad_value(uint8_t btn_pad_value);
 static void display_init();
+static void protimer_state_table_init(protimer_t *const mobj);
 
 /* Main application object */
 static protimer_t protimer;
@@ -21,7 +22,7 @@ void setup() {
   pinMode(PIN_BUTTON2, INPUT);
   pinMode(PIN_BUTTON3, INPUT);
 
-  protimer_state_table_init();
+  protimer_state_table_init(&protimer);
   protimer_init(&protimer);
 }
 
@@ -101,10 +102,10 @@ static void protimer_state_table_init(protimer_t *const mobj){
   static e_handler_t protimer_state_table[MAX_STATES][MAX_SIGNALS] = {
   
   [IDLE] = {&IDLE_Inc_time, NULL, &IDLE_Time_tick, &IDLE_Start_pause, NULL, &IDLE_Entry, &IDLE_Exit},
-  [TIME_SET] = {},
-  [COUNTDOWN] = {},
-  [PAUSE] = {},
-  [STAT] = {}
+  [TIME_SET] = {&TIME_SET_Inc_time, &TIME_SET_Dec_time, NULL, &TIME_SET_Start_pause, &TIME_SET_Abrt,&TIME_SET_Entry,&TIME_SET_Exit},
+  [COUNTDOWN] = {NULL, NULL, &COUNTDOWN_Time_tick, &COUNTDOWN_Start_pause, &COUNTDOWN_Abrt, NULL, &COUNTDOWN_Exit},
+  [PAUSE] = {&PUASE_Inc_time, &PUASE_Dec_time, NULL, &PUASE_Start_pause, &PUASE_Abrt,&PUASE_ENTRY, &PUASE_Exit},
+  [STAT] = {NULL, NULL, &STAT_Time_tick, NULL, NULL, &STAT_Entry, &STAT_Exit}
   };
 
   mobj->state_table = (uintptr_t*) &protimer_state_table[0][0];

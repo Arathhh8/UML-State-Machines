@@ -10,11 +10,12 @@ static void do_beep(void);
 
 void protimer_init(protimer_t *mobj){
     event_t ee; // entry action
+    e_handler_t ehandler;
     ee.sig = ENTRY;
     mobj->active_state = IDLE;
     mobj->pro_time = 0;
-    protimer_state_machine(mobj, &ee);
-
+    ehandler = (e_handler_t)mobj->state_table[IDLE * MAX_SIGNALS + ENTRY];
+    (*ehandler)(mobj, &ee);
 }
 
 /**********************************************************************************************************************************************
@@ -145,6 +146,11 @@ event_status_t PUASE_Inc_time(protimer_t *const mobj, event_t const *const e){
     return EVENT_TRANSITION;   
 }
 
+event_status_t PUASE_Start_pause(protimer_t *const mobj, event_t const *const e){
+    mobj->active_state = COUNTDOWN;
+    return EVENT_HANDLED;
+}
+
 event_status_t PUASE_Dec_time(protimer_t *const mobj, event_t const *const e){
     if(mobj->curr_time >= 60){
         mobj->curr_time -= 60;
@@ -152,6 +158,11 @@ event_status_t PUASE_Dec_time(protimer_t *const mobj, event_t const *const e){
         return EVENT_TRANSITION;
     }
     return EVENT_IGNORED;
+}
+
+event_status_t PUASE_Abrt(protimer_t *const mobj, event_t const *const e){
+    mobj->active_state = IDLE;
+    return EVENT_TRANSITION;
 }
 
 
