@@ -20,6 +20,8 @@ void setup() {
   pinMode(PIN_BUTTON1, INPUT);
   pinMode(PIN_BUTTON2, INPUT);
   pinMode(PIN_BUTTON3, INPUT);
+
+  protimer_state_table_init();
   protimer_init(&protimer);
 }
 
@@ -91,6 +93,21 @@ void protimer_event_dispatcher(protimer_t *const mobj, event_t const *const e){
     mobj->active_state = target;
     protimer_state_machine(mobj, &ee);
   }
+
+}
+
+static void protimer_state_table_init(protimer_t *const mobj){
+
+  static e_handler_t protimer_state_table[MAX_STATES][MAX_SIGNALS] = {
+  
+  [IDLE] = {&IDLE_Inc_time, NULL, &IDLE_Time_tick, &IDLE_Start_pause, NULL, &IDLE_Entry, &IDLE_Exit},
+  [TIME_SET] = {},
+  [COUNTDOWN] = {},
+  [PAUSE] = {},
+  [STAT] = {}
+  };
+
+  mobj->state_table = (uintptr_t*) &protimer_state_table[0][0];
 
 }
 

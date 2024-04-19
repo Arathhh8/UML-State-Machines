@@ -44,7 +44,8 @@ typedef enum {
 
 /* Internal activity signals */
     ENTRY,
-    EXIT    
+    EXIT,
+    MAX_SIGNALS
 }protimer_signal_t;
 
 
@@ -54,7 +55,8 @@ typedef enum{
     TIME_SET,
     COUNTDOWN,
     PAUSE,
-    STAT
+    STAT,
+    MAX_STATES
 }protimer_state_t;
 
 
@@ -64,6 +66,7 @@ typedef struct {
     uint32_t elapsed_time;
     uint32_t pro_time;
     protimer_state_t active_state;
+    uintptr_t *state_table;
 }protimer_t;
 
 
@@ -91,6 +94,9 @@ typedef enum{
     EVENT_IGNORED,
     EVENT_TRANSITION
 }event_status_t;
+
+// Function pointer type for event handlers
+typedef event_status_t (*e_handler_t)(protimer_t *const mobj, event_t const *const e);
 
 /* FUNCTION PROTOTYPES */
 
