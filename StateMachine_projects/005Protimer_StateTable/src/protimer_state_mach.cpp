@@ -28,8 +28,8 @@ event_status_t IDLE_Entry(protimer_t *const mobj, event_t const *const e){
     mobj->curr_time = 0;
     mobj->elapsed_time = 0;
     display_time(0);
-    display_message("Set ", 0, 0);
-    display_message("time ", 1, 0);
+    display_message("SET ", 0, 0);
+    display_message("TIME ", 1, 0);
     return EVENT_HANDLED;
 }
 

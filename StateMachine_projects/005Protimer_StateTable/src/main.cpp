@@ -17,7 +17,7 @@ void setup() {
   Serial.begin(115200);
   display_init();
   Serial.println("Productive timer application");
-  Serial.println("============================");
+  Serial.println("======== STATE TABLE ========");
   pinMode(PIN_BUTTON1, INPUT);
   pinMode(PIN_BUTTON2, INPUT);
   pinMode(PIN_BUTTON3, INPUT);
@@ -75,10 +75,12 @@ void protimer_event_dispatcher(protimer_t *const mobj, event_t const *const e){
 
   event_status_t status;
   protimer_state_t source, target;
+  e_handler_t ehandler;
 
   source = mobj->active_state;
-
-  status = protimer_state_machine(mobj, e);
+  ehandler = (e_handler_t)mobj->state_table[mobj->active_state * MAX_SIGNALS + e->sig];
+  if(ehandler)
+    status = (*ehandler)(mobj, e);
   
 
   if(status == EVENT_TRANSITION){
@@ -86,13 +88,15 @@ void protimer_event_dispatcher(protimer_t *const mobj, event_t const *const e){
     event_t ee;
     // 1. Run the exit action for the source state
     ee.sig = EXIT;
-    mobj->active_state = source;
-    protimer_state_machine(mobj, &ee);
+    ehandler = (e_handler_t)mobj->state_table[source * MAX_SIGNALS + EXIT];
+    if(ehandler)
+      (*ehandler)(mobj,&ee);
 
     // 2. Run the entry action for the target state
     ee.sig = ENTRY;
-    mobj->active_state = target;
-    protimer_state_machine(mobj, &ee);
+    ehandler = (e_handler_t)mobj->state_table[target * MAX_SIGNALS + ENTRY];
+    if(ehandler)
+      (*ehandler)(mobj,&ee);
   }
 
 }
