@@ -2,8 +2,11 @@
 #include"qpn.h"
 #include "QHSM_Test.h"
 
+
+
 void setup() {
   // put your setup code here, to run once:
+  QHsmTst_ctor();
   
 }
 
