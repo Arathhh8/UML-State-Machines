@@ -28,7 +28,6 @@ typedef struct Clock_Alarm {
     QHsm super;
 
 /* private: */
-    uint32_t curr_time;
     uint32_t temp_time;
     uint32_t alarm_time;
     uint8_t alarm_status;
@@ -37,6 +36,13 @@ typedef struct Clock_Alarm {
 /* private state histories */
     QStateHandler hist_Clock;
 } Clock_Alarm;
+
+/* public: */
+static uint32_t Clock_Alarm_get_curr_time(void);
+static void Clock_Alarm_update_curr_time(void);
+static void Clock_Alarm_set_curr_time(uint32_t new_curr_time);
+static void Clock_Alarm_display_curr_time(Clock_Alarm * const me, uint8_t row, uint8_t col);
+extern uint32_t Clock_Alarm_curr_time;
 extern Clock_Alarm Clock_Alarm_obj;
 
 /* protected: */
@@ -62,10 +68,57 @@ void Clock_Alarm_ctor(void) {
 /*.$enddef${HSMs::Clock_Alarm_ctor} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 /*.$define${HSMs::Clock_Alarm} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
 /*.${HSMs::Clock_Alarm} ....................................................*/
+uint32_t Clock_Alarm_curr_time;
 Clock_Alarm Clock_Alarm_obj;
+/*.${HSMs::Clock_Alarm::get_curr_time} .....................................*/
+static uint32_t Clock_Alarm_get_curr_time(void) {
+}
+
+/*.${HSMs::Clock_Alarm::update_curr_time} ..................................*/
+static void Clock_Alarm_update_curr_time(void) {
+    if(++Clock_Alarm_curr_time == MAX_TIME){
+        Clock_Alarm_curr_time = 0;
+    }
+}
+
+/*.${HSMs::Clock_Alarm::set_curr_time} .....................................*/
+static void Clock_Alarm_set_curr_time(uint32_t new_curr_time) {
+    uint8_t save_reg = SREG;
+    cli();
+    Clock_Alarm_curr_time = new_curr_time;
+    SREG = save_reg;
+}
+
+/*.${HSMs::Clock_Alarm::display_curr_time} .................................*/
+static void Clock_Alarm_display_curr_time(Clock_Alarm * const me, uint8_t row, uint8_t col) {
+    String time_as_string;
+    uint32_t time_;
+
+    uint32_t time24h = Clock_Alarm_get_curr_time()/10; //convert to number of seconds
+    uint8_t ss = time24h % 10U;       //extract sub-second to append later
+
+    time_ = (me->time_mode == MODE_24H)?time24h:convert_24hformat_to_12h(time24h);
+    time_as_string = integertime_to_string(time_); //hh:mm:ss
+    time_as_string.concat('.');
+    time_as_string.concat(ss);
+
+    /*if mode is 12H , concatenate  am/pm information */
+    if(me->time_mode == MODE_12H){
+        time_as_string.concat(' ');
+        time_as_string.concat(get_am_or_pm(time24h));
+    }
+
+    display_write(time_as_string,row,col);
+
+}
+
 /*.${HSMs::Clock_Alarm::SM} ................................................*/
 static QState Clock_Alarm_initial(Clock_Alarm * const me) {
     /*.${HSMs::Clock_Alarm::SM::initial} */
+    Clock_Alarm_set_curr_time(INITIAL_CURR_TIME);
+    me->alarm_time = INITIAL_ALARM_TIME;
+    me->time_mode = MODE_12;
+    me->alarm_status = ALARM_OFF;
     /* state history attributes */
     /* state history attributes */
     me->hist_Clock = Q_STATE_CAST(&Clock_Alarm_Ticking);
@@ -98,6 +151,12 @@ static QState Clock_Alarm_Clock(Clock_Alarm * const me) {
 static QState Clock_Alarm_Ticking(Clock_Alarm * const me) {
     QState status_;
     switch (Q_SIG(me)) {
+        /*.${HSMs::Clock_Alarm::SM::Clock::Ticking} */
+        case Q_ENTRY_SIG: {
+            Clock_Alarm_display_curr_time(me,TICKING_CURR_TIME_ROW, TICKING_CURR_TIME_COL)
+            status_ = Q_HANDLED();
+            break;
+        }
         /*.${HSMs::Clock_Alarm::SM::Clock::Ticking::SET} */
         case SET_SIG: {
             status_ = Q_TRAN(&Clock_Alarm_Clock_Setting);
@@ -175,3 +234,8 @@ static QState Clock_Alarm_Alarm_Notify(Clock_Alarm * const me) {
     return status_;
 }
 /*.$enddef${HSMs::Clock_Alarm} ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
+
+ISR(TIMER1_COMPA_vect){
+    Clock_Alarm_update_curr_time();
+}
