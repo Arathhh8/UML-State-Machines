@@ -9,9 +9,9 @@
   <item name="backups">0</item>
  </group>
  <group name="windows">
-  <item id="HSMs::QHsmTst::SM">0,0,640,480</item>
-  <item id="../src::QHSM_Test.cpp">0,0,1309,684,*</item>
-  <item id="../src::QHSM_Test.h">635,0,674,300</item>
+  <item id="HSMs::QHsmTst::SM">0,0,1128,684,*</item>
+  <item id="../src::QHSM_Test.cpp">-181,24,1309,684</item>
+  <item id="../src::QHSM_Test.h">0,0,1128,684</item>
  </group>
  <group name="search">
   <item name="options">2032128</item>

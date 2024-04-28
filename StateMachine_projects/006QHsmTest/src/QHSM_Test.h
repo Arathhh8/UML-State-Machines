@@ -30,6 +30,7 @@ enum QHSM_Test_Signals{
     H_SIG,
     I_SIG,
     TERMINATE_SIG,
+    IGNORE_SIG,
     MAX_SIG
 };
 
