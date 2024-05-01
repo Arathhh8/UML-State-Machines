@@ -47,7 +47,7 @@ if(me-&gt;time_mode == MODE_12H){
 display_write(time_as_string,row,col);
 </code>
    </operation>
-   <statechart properties="0x00">
+   <statechart properties="0x01">
     <initial target="../1/2">
      <action>Clock_Alarm_set_curr_time(INITIAL_CURR_TIME);
 me-&gt;alarm_time = INITIAL_ALARM_TIME;
@@ -118,22 +118,7 @@ me-&gt;alarm_status = ALARM_OFF;</action>
    <code>QHsm_ctor(&amp;Clock_Alarm_obj.super, Q_STATE_CAST(&amp;Clock_Alarm_initial));</code>
   </operation>
   <directory name="../src">
-   <file name="ClockAlarm_SM.cpp">
-    <text>#include&lt;Arduino.h&gt;
-#include &quot;qpn.h&quot;
-#include &quot;lcd.h&quot;
-#include &quot;ClockAlarm_SM.h&quot;
-
-$declare${HSMs::Clock_Alarm}
-$define${HSMs::Clock_Alarm_ctor}
-$define${HSMs::Clock_Alarm} 
-
-
-ISR(TIMER1_COMPA_vect){
-    Clock_Alarm_update_curr_time();
-}
-</text>
-   </file>
+   <file name="ClockAlarm_SM.cpp" properties="external"/>
    <file name="ClockAlarm_SM.h">
     <text>#ifndef CLOCK_ALARM_H
 #define CLOCK_ALARM_H
