@@ -32,7 +32,7 @@ enum ClockAlarm_Signals{
 
 enum time_mode{
     MODE_24H,
-    MODE_12
+    MODE_12H
 };
 
 enum alarm_status{
@@ -40,12 +40,45 @@ enum alarm_status{
     ALARM_ON
 };
 
+typedef enum time_format{
+    FORMAT_24H,
+    FORMAT_AM,
+    FORMAT_PM
+}time_format_t;
+
+#define GET_HOUR(seconds)     (seconds/3600UL)
+#define GET_MIN(seconds)      ((seconds/60UL)%60UL)
+#define GET_SEC(seconds)      (seconds % 60UL)
+#define DIGIT1(d)             (d/10U)
+#define DIGIT2(d)             (d%10U)
+
 #define MAX_TIME (864000UL)
 #define INITIAL_CURR_TIME ((10UL * 3600UL + 10UL * 60UL + 10UL) * 10UL)
-#define INITIAL_ALARM_TIME ((8UL * 3600UL )
+#define INITIAL_ALARM_TIME (8UL * 3600UL )
 
 #define TICKING_CURR_TIME_ROW     0
 #define TICKING_CURR_TIME_COL     3
+#define CLOCK_SETTING_TIME_ROW 0
+#define CLOCK_SETTING_TIME_COL 2
+#define CLOCK_SETTING_TIME_HOUR_D1_COL 2
+#define CLOCK_SETTING_TIME_HOUR_D2_COL 3
+#define CLOCK_SETTING_TIME_MIN_D1_COL 5
+#define CLOCK_SETTING_TIME_MIN_D2_COL 6
+#define CLOCK_SETTING_TIME_SEC_D1_COL 8
+#define CLOCK_SETTING_TIME_SEC_D2_COL 9
+#define CLOCK_SETTING_TIME_FMT_COL     11
+#define CLOCK_SETTING_ERR_MSG_ROW 1
+#define CLOCK_SETTING_ERR_MSG_COL  4
+#define CLOCK_SETTING_ERR_MSG_COL_END 9
+
+#define ALARM_SETTING_CURR_TIME_ROW 1
+#define ALARM_SETTING_CURR_TIME_COL  2
+#define ALARM_SETTING_STATUS_ROW 0
+#define ALARM_SETTING_STATUS_COL  4
+#define ALARM_NOTIFY_MSG_ROW 0
+#define ALARM_NOTIFY_MSG_COL 4
+
+
 
 
 /*.$declare${HSMs::Clock_Alarm_ctor} vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/

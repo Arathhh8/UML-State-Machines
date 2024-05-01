@@ -82,7 +82,12 @@ uint32_t Clock_Alarm_curr_time;
 Clock_Alarm Clock_Alarm_obj;
 /*.${HSMs::Clock_Alarm::get_curr_time} .....................................*/
 static uint32_t Clock_Alarm_get_curr_time(void) {
-    uin
+    uint8_t saved_sreg = SREG;
+    uint32_t temp;
+    cli();
+    temp = Clock_Alarm_curr_time;
+    SREG = saved_sreg;
+    return temp;
 }
 
 /*.${HSMs::Clock_Alarm::update_curr_time} ..................................*/
@@ -176,6 +181,12 @@ static QState Clock_Alarm_Ticking(Clock_Alarm * const me) {
         /*.${HSMs::Clock_Alarm::SM::Clock::Ticking::OK} */
         case OK_SIG: {
             status_ = Q_TRAN(&Clock_Alarm_Alarm_Setting);
+            break;
+        }
+        /*.${HSMs::Clock_Alarm::SM::Clock::Ticking::TICK} */
+        case TICK_SIG: {
+             Clock_Alarm_display_curr_time(me,TICKING_CURR_TIME_ROW,TICKING_CURR_TIME_COL);
+            status_ = Q_HANDLED();
             break;
         }
         default: {
@@ -374,7 +385,7 @@ if(me->time_mode == MODE_12H){
 }
 else
 	me->temp_format = FORMAT_24H;
-       
+
 
 /* ${HSMs::Clock_Alarm::SM::Clock::Settings::Clock_Setting} */
 Clock_Alarm_display_clock_setting_time(me,0,2);
@@ -448,7 +459,7 @@ void display_erase_block(uint8_t row,uint8_t col_start,uint8_t col_stop)
 
 /* ${HSMs::Clock_Alarm::SM::Clock::Settings::OK} */
 	uint8_t save_sreg;
-	
+
 	if(me->temp_format != FORMAT_24H){
 		me->temp_time = convert_12hformat_to_24h( me->temp_time,(time_format_t)me->temp_format);
 		me->time_mode = MODE_12H;
@@ -460,7 +471,7 @@ void display_erase_block(uint8_t row,uint8_t col_start,uint8_t col_stop)
 	save_sreg = SREG;
 	cli();
 	TCCR1B &= ~(0x7U); //Stop the TIMER1
-	TCNT1 = 0U;    
+	TCNT1 = 0U;
 	Clock_Alarm_curr_time = me->temp_time;
 	TCCR1B |= 0x4U;
 	SREG = save_sreg;
