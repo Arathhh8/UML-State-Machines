@@ -21,7 +21,7 @@ void loop() {
   while(millis() - tick_time >= 50){
     // Send TICK event
     tick_time = millis();
-    Q_SIG(super_ClockAlarm) = TICK_SIG;
+    Q_SIG(super_ClockAlarm) = TICK_SIG; // to review
     QHSM_DISPATCH(super_ClockAlarm);
   }
 }
